@@ -1,0 +1,77 @@
+﻿@page
+@model JiPathoman.Pages.Pathoman.BotPathomanModel
+@{
+    ViewData["Title"] = "BotPathoman";
+}
+
+<h2>BotPathoman</h2>
+
+@if (string.IsNullOrEmpty(Model.Message))
+{
+<form method="post" id="myForm" class="">
+    <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Population Control</span>
+        </div>
+        <input type="text" asp-for="Population_Control" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+    </div>
+    <div class="input-group input-group-sm mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
+        </div>
+        <input type="email" asp-for="Email" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+    </div>
+
+    <div class="form-group">
+        <label> filename list: </label> <span class="text-muted">Auto-load filenames under: @Startup.DataUpload</span>
+        <br />
+        <textarea type="text" class="form-control" id="filenames" asp-for="filenames" placeholder="" cols="10" rows="16"></textarea>
+    </div>
+    <div class="form-group">
+        <label for="BotDelay"> Delay (seconds) </label>
+        <input type="text" class="form-control" id="BotDelay" placeholder="" asp-for="BotDelay" cols="10" rows="16" />
+    </div>
+
+    <button type="submit" class="btn btn-default">Submit</button>
+
+</form>
+}
+else
+{
+    <div id="Submission-status" class="text-success">@Model.Message</div>
+    <button type="button" class="btn btn-default" onclick="window.close()"> close </button>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hub")
+            .build();
+
+        connection.on("ReceiveMessage", (message) => {
+            console.log('ReceiveMessage= ', message);
+            //const isOpen = $('#dialog-message').dialog('isOpen');
+            //if (!isOpen) {
+            //    $("#dialog-message").dialog("open");
+            //}
+            $("#Submission-status").text(message);
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+    </script>
+    <script>
+        $(function () {
+            //$("#dialog-message").dialog({
+            //    modal: true,
+            //    autoOpen: true,
+            //    buttons: {
+            //        Ok: function () {
+            //            $(this).dialog("close");
+            //        }
+            //    }
+            //});
+
+        });
+    </script>
+
+}
+
+

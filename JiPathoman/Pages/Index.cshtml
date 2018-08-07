@@ -1,0 +1,96 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="row">
+    <h2>Actions</h2>
+    <ul>
+        <li><a asp-page="/Pathoman/BotPathoman" target="_blank">Bot Pathoman</a> (<span id="Submission-status" class="text-info">...</span>)</li>
+    </ul>
+</div>
+
+<div class="row">
+    <table class="table table-responsive table-bordered table-condensed">
+        <caption>Application Status</caption>
+        <tr>
+            <td class="text-right" style="width:120px;">Upload Files:</td>
+            <td>@Model.UploadCount <span class="text-primary">Note</span> : put your standard CSV (comma sepearated, line feed /r/n, last line empty) files here.</td>
+        </tr>
+        <tr>
+            <td class="text-right">Download Files:</td>
+            <td>@Model.DownloadCount </td>
+        </tr>
+        <tr>
+            <td class="text-right">Webpages:</td>
+            <td>@Model.WebpageCount </td>
+        </tr>
+
+    </table>
+
+</div>
+
+<div class="row">
+    <table class="table table-responsive table-bordered table-condensed">
+        <caption>Application Settings (@Startup.AppRoot\appsettings.json)</caption>
+        <tr>
+            <td class="text-right" style="width:120px;">Data-Root:</td>
+            <td>@Startup.DataRoot</td>
+        </tr>
+        <tr>
+            <td class="text-right">Log:</td>
+            <td>@Startup.DataLog</td>
+        </tr>
+        <tr>
+            <td class="text-right">Upload:</td>
+            <td>@Startup.DataUpload</td>
+        </tr>
+        <tr>
+            <td class="text-right">Download:</td>
+            <td>@Startup.DataDownload</td>
+        </tr>
+        <tr>
+            <td class="text-right">Webpage:</td>
+            <td>@Startup.DataWebpage</td>
+        </tr>
+
+    </table>
+</div>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/hub")
+        .build();
+
+    connection.on("ReceiveMessage", (message) => {
+        console.log('ReceiveMessage= ', message);
+        //const isOpen = $('#dialog-message').dialog('isOpen');
+        //if (!isOpen) {
+        //    $("#dialog-message").dialog("open");
+        //}
+        $("#Submission-status").text(message);
+    });
+
+    connection.start().catch(err => console.error(err.toString()));
+</script>
+<script>
+    $(function () {
+        //$("#dialog-message").dialog({
+        //    modal: true,
+        //    autoOpen: true,
+        //    buttons: {
+        //        Ok: function () {
+        //            $(this).dialog("close");
+        //        }
+        //    }
+        //}); 
+
+    });
+</script>
+
+<div id="dialog-message" title="Submission status" >
+    <p>
+        
+    </p>
+</div>
